@@ -1,6 +1,3 @@
-// reference to https://www.pokemon.com/us/pokedex
-
-var aPokemonList = [];
 const eType = {
     grass: [0, "grass"],
     posion: [1, "posion"],
@@ -12,18 +9,75 @@ const eType = {
     ground: [7, "ground"],
     rock: [8, "rock"],
     electric: [9, "electric"]
-}
+};
 const eCategory = {
     seed: [0, "seed"],
     lizard: [1, "lizard"],
     flame: [2, "flame"]
-}
+};
 
-let pBulbasaur  = {
+let repoPokemon = (function() {
+    let aPokemonList = [];
+    const pPokemonTemplate = {
+        id: 1,
+        name: "Bulbasaur",
+        evolution: 2,
+        degeneration: null,
+        types: [eType.grass, eType.posion],
+        category: eCategory.seed,
+        state: {
+            HP: 45,
+            ATK: 49,
+            DEF: 49,
+            SPD: 45,
+            SP_ATK: 65,
+            SP_DEF: 65
+        },
+        profile: {
+            height: 0.7,
+            weight: 6.9,
+            maleRatio: 0.875,
+        }
+    }
+
+    function add(pPokemon) {
+        aPokemonList.push(pPokemon);
+    }
+    function getAll() {
+        return aPokemonList;
+    }
+    function validate(pPokemon) {
+        if (typeof pPokemon != "object") return false;
+        let keyTemplate = Object.keys(pPokemonTemplate);
+        let keyPokemon = Object.keys(pPokemon);
+        return JSON.stringify(keyTemplate) == JSON.stringify(keyPokemon);
+    }
+    function addv(pPokemon) {
+        if (validate(pPokemon)) {
+            add(pPokemon);
+        } else {
+            alert("This is not a valid pokemon.");
+        }
+    }
+    function filterByName(strName) {
+        return aPokemonList.filter(pPokemon => pPokemon.name == strName);
+    }
+
+    return {
+        add: add,
+        getAll: getAll,
+        validate: validate,
+        addv: addv,
+        filterByName: filterByName
+    };
+})();
+
+// reference to https://pokedex.org/
+let pBulbasaur = {
     id: 1,
+    name: "Bulbasaur",
     evolution: 2,
     degeneration: null,
-    name: "Bulbasaur",
     types: [eType.grass, eType.posion],
     category: eCategory.seed,
     state: {
@@ -39,12 +93,12 @@ let pBulbasaur  = {
         weight: 6.9,
         maleRatio: 0.875,
     }
-}
+};
 let pIvysaur = {
     id: 2,
+    name: "Ivysaur",
     evolution: 3,
     degeneration: 1,
-    name: "Ivysaur",
     types: [eType.grass, eType.posion],
     category: eCategory.seed,
     state: {
@@ -60,12 +114,12 @@ let pIvysaur = {
         weight: 13,
         maleRatio: 0.875,
     }
-}
+};
 let pVenusaur = {
     id: 3,
+    name: "Venusaur",
     evolution: null,
     degeneration: 2,
-    name: "Venusaur",
     types: [eType.grass, eType.posion],
     category: eCategory.seed,
     state: {
@@ -81,12 +135,12 @@ let pVenusaur = {
         weight: 100,
         maleRatio: 0.875,
     }
-}
+};
 let pCharmander = {
     id: 4,
+    name: "Charmander",
     evolution: 5,
     degeneration: null,
-    name: "Charmander",
     types: eType.fire,
     category: eCategory.lizard,
     state: {
@@ -102,12 +156,12 @@ let pCharmander = {
         weight: 8.5,
         maleRatio: 0.875,
     }
-}
+};
 let pCharmeleon = {
     id: 5,
-    evolution: 6,   // next pokemon id
-    degeneration: 4, // previous pokemon id
     name: "Charmeleon",
+    evolution: 6,
+    degeneration: 4,
     types: eType.fire,
     category: eCategory.flame,
     state: {
@@ -123,12 +177,12 @@ let pCharmeleon = {
         weight: 19,
         maleRatio: 0.875,
     }
-}
+};
 let pCharizard = {
     id: 6,
-    evolution: null,   // next pokemon id
-    degeneration: 5, // previous pokemon id
     name: "Charizard",
+    evolution: null,
+    degeneration: 5,
     types: [eType.fire, eType.flying],
     category: eCategory.flame,
     state: {
@@ -144,31 +198,24 @@ let pCharizard = {
         weight: 90.5,
         maleRatio: 0.875,
     }
-}
-aPokemonList.push(pBulbasaur);
-aPokemonList.push(pIvysaur);
-aPokemonList.push(pVenusaur);
-aPokemonList.push(pCharmander);
-aPokemonList.push(pCharmeleon);
-aPokemonList.push(pCharizard);
+};
 
+repoPokemon.addv(pBulbasaur);
+repoPokemon.addv(pIvysaur);
+repoPokemon.addv(pVenusaur);
+repoPokemon.addv(pCharmander);
+repoPokemon.addv(pCharmeleon);
+repoPokemon.addv(pCharizard);
 
 document.write("<p class='list'>")
 document.write("Pokemons in list:");    // CR is ignored in html, meaningless for writeln
 document.write("<br>");                 // use <br> for new line
-for (let i = 0; i < aPokemonList.length; i++) {
-    let pPokemon = aPokemonList[i];
-    let digit = 3 - Math.floor(Math.log10(pPokemon.id));
-    let digitDisplay = "";
-    for (let j = 0; j < digit; j++) {
-        digitDisplay += "0";
-    }
-    document.write('#' + digitDisplay + pPokemon.id + " "
-                    + pPokemon.name);
-    document.write(" (height: " + pPokemon.profile.height + "m)");
+repoPokemon.getAll().forEach(pPokemon => {
+    document.write('#' + pPokemon.id + " " + pPokemon.name
+        + " (height: " + pPokemon.profile.height + "m)");
     if (pPokemon.profile.height >= 1) {
         document.write(" - Wow, that's big!");
     }
     document.write("<br>");
-}
+})
 document.write("</p>")
