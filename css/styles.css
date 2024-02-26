@@ -2,3 +2,8 @@ body {
     background-color: rgb(29, 29, 29);
     color: white;
 }
+
+.list {
+    font-size: 48px;
+    color: yellowgreen;
+}
