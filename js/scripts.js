@@ -1,6 +1,6 @@
 // reference to https://www.pokemon.com/us/pokedex
 
-var aPekemonList = [];
+var aPokemonList = [];
 const eType = {
     grass: [0, "grass"],
     posion: [1, "posion"],
@@ -19,126 +19,156 @@ const eCategory = {
     flame: [2, "flame"]
 }
 
-let bulbasaur  = {
+let pBulbasaur  = {
     id: 1,
-    evolution: 2,   // next pokemon id
-    degeneration: null, // previous pokemon id
-    name: "bulbasaur",
+    evolution: 2,
+    degeneration: null,
+    name: "Bulbasaur",
     types: [eType.grass, eType.posion],
-    weaknesses: [eType.fire, eType.ice, eType.flying, eType.psychic],
     category: eCategory.seed,
     state: {
-        HP: 3,
-        ATK: 3,
-        DEF: 3,
-        SP_ATK: 4,
-        SP_DEF: 4,
-        SPD: 3
+        HP: 45,
+        ATK: 49,
+        DEF: 49,
+        SPD: 45,
+        SP_ATK: 65,
+        SP_DEF: 65
+    },
+    profile: {
+        height: 0.7,
+        weight: 6.9,
+        maleRatio: 0.875,
     }
 }
-let ivysaur = {
+let pIvysaur = {
     id: 2,
-    evolution: 3,   // next pokemon id
-    degeneration: 1, // previous pokemon id
-    name: "ivysaur",
+    evolution: 3,
+    degeneration: 1,
+    name: "Ivysaur",
     types: [eType.grass, eType.posion],
-    weaknesses: [eType.fire, eType.ice, eType.flying, eType.psychic],
     category: eCategory.seed,
     state: {
-        HP: 4,
-        ATK: 4,
-        DEF: 4,
-        SP_ATK: 5,
-        SP_DEF: 5,
-        SPD: 3
+        HP: 60,
+        ATK: 62,
+        DEF: 63,
+        SPD: 60,
+        SP_ATK: 80,
+        SP_DEF: 80
+    },
+    profile: {
+        height: 1,
+        weight: 13,
+        maleRatio: 0.875,
     }
 }
-let venusaur = {
+let pVenusaur = {
     id: 3,
-    evolution: null,   // next pokemon id
-    degeneration: 2, // previous pokemon id
-    name: "venusaur",
+    evolution: null,
+    degeneration: 2,
+    name: "Venusaur",
     types: [eType.grass, eType.posion],
-    weaknesses: [eType.fire, eType.ice, eType.flying, eType.psychic],
     category: eCategory.seed,
     state: {
-        HP: 5,
-        ATK: 5,
-        DEF: 5,
-        SP_ATK: 6,
-        SP_DEF: 6,
-        SPD: 5
+        HP: 80,
+        ATK: 82,
+        DEF: 83,
+        SPD: 80,
+        SP_ATK: 100,
+        SP_DEF: 100
+    },
+    profile: {
+        height: 2,
+        weight: 100,
+        maleRatio: 0.875,
     }
 }
-let charmander = {
+let pCharmander = {
     id: 4,
-    evolution: 5,   // next pokemon id
-    degeneration: null, // previous pokemon id
-    name: "charmander",
+    evolution: 5,
+    degeneration: null,
+    name: "Charmander",
     types: eType.fire,
-    weaknesses: [eType.water, eType.ground, eType.rock],
     category: eCategory.lizard,
     state: {
-        HP: 3,
-        ATK: 4,
-        DEF: 3,
-        SP_ATK: 4,
-        SP_DEF: 3,
-        SPD: 4
+        HP: 39,
+        ATK: 52,
+        DEF: 43,
+        SPD: 65,
+        SP_ATK: 60,
+        SP_DEF: 50
+    },
+    profile: {
+        height: 0.6,
+        weight: 8.5,
+        maleRatio: 0.875,
     }
 }
-let charmeleon = {
+let pCharmeleon = {
     id: 5,
     evolution: 6,   // next pokemon id
     degeneration: 4, // previous pokemon id
-    name: "charmeleon",
+    name: "Charmeleon",
     types: eType.fire,
-    weaknesses: [eType.water, eType.ground, eType.rock],
     category: eCategory.flame,
     state: {
-        HP: 4,
-        ATK: 4,
-        DEF: 4,
-        SP_ATK: 5,
-        SP_DEF: 4,
-        SPD: 5
+        HP: 58,
+        ATK: 64,
+        DEF: 58,
+        SPD: 80,
+        SP_ATK: 80,
+        SP_DEF: 65
+    },
+    profile: {
+        height: 1.1,
+        weight: 19,
+        maleRatio: 0.875,
     }
 }
-let charizard = {
+let pCharizard = {
     id: 6,
     evolution: null,   // next pokemon id
     degeneration: 5, // previous pokemon id
-    name: "charizard",
+    name: "Charizard",
     types: [eType.fire, eType.flying],
-    weaknesses: [eType.water, eType.electric, eType.rock],    // rock duels 4x dmg so have 4/2 items
     category: eCategory.flame,
     state: {
-        HP: 5,
-        ATK: 5,
-        DEF: 5,
-        SP_ATK: 7,
-        SP_DEF: 5,
-        SPD: 6
+        HP: 78,
+        ATK: 84,
+        DEF: 78,
+        SPD: 100,
+        SP_ATK: 109,
+        SP_DEF: 85
+    },
+    profile: {
+        height: 1.7,
+        weight: 90.5,
+        maleRatio: 0.875,
     }
 }
-aPekemonList.push(bulbasaur);
-aPekemonList.push(ivysaur);
-aPekemonList.push(venusaur);
-aPekemonList.push(charmander);
-aPekemonList.push(charmeleon);
-aPekemonList.push(charizard);
+aPokemonList.push(pBulbasaur);
+aPokemonList.push(pIvysaur);
+aPokemonList.push(pVenusaur);
+aPokemonList.push(pCharmander);
+aPokemonList.push(pCharmeleon);
+aPokemonList.push(pCharizard);
 
 
 document.write("<p class='list'>")
 document.write("Pokemons in list:");    // CR is ignored in html, meaningless for writeln
 document.write("<br>");                 // use <br> for new line
-for (let i = 0; i < aPekemonList.length; i++) {
-    let digit = 3 - Math.floor(Math.log10(aPekemonList[i].id));
+for (let i = 0; i < aPokemonList.length; i++) {
+    let pPokemon = aPokemonList[i];
+    let digit = 3 - Math.floor(Math.log10(pPokemon.id));
     let digitDisplay = "";
     for (let j = 0; j < digit; j++) {
         digitDisplay += "0";
     }
-    document.write('#' + digitDisplay + aPekemonList[i].id + " "
-                    + aPekemonList[i].name + "<br>");
+    document.write('#' + digitDisplay + pPokemon.id + " "
+                    + pPokemon.name);
+    document.write(" (height: " + pPokemon.profile.height + "m)");
+    if (pPokemon.profile.height >= 1) {
+        document.write(" - Wow, that's big!");
+    }
+    document.write("<br>");
 }
 document.write("</p>")
