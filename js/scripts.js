@@ -156,19 +156,12 @@ aPokemonList.push(pCharizard);
 document.write("<p class='list'>")
 document.write("Pokemons in list:");    // CR is ignored in html, meaningless for writeln
 document.write("<br>");                 // use <br> for new line
-for (let i = 0; i < aPokemonList.length; i++) {
-    let pPokemon = aPokemonList[i];
-    let digit = 3 - Math.floor(Math.log10(pPokemon.id));
-    let digitDisplay = "";
-    for (let j = 0; j < digit; j++) {
-        digitDisplay += "0";
-    }
-    document.write('#' + digitDisplay + pPokemon.id + " "
-                    + pPokemon.name);
-    document.write(" (height: " + pPokemon.profile.height + "m)");
+aPokemonList.forEach(pPokemon => {
+    document.write('#' + pPokemon.id + " " + pPokemon.name
+        + " (height: " + pPokemon.profile.height + "m)");
     if (pPokemon.profile.height >= 1) {
         document.write(" - Wow, that's big!");
     }
     document.write("<br>");
-}
+})
 document.write("</p>")
