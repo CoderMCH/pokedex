@@ -18,6 +18,27 @@ const eCategory = {
 
 let repoPokemon = (function() {
     let aPokemonList = [];
+    const pPokemonTemplate = {
+        id: 1,
+        name: "Bulbasaur",
+        evolution: 2,
+        degeneration: null,
+        types: [eType.grass, eType.posion],
+        category: eCategory.seed,
+        state: {
+            HP: 45,
+            ATK: 49,
+            DEF: 49,
+            SPD: 45,
+            SP_ATK: 65,
+            SP_DEF: 65
+        },
+        profile: {
+            height: 0.7,
+            weight: 6.9,
+            maleRatio: 0.875,
+        }
+    }
 
     function add(pPokemon) {
         aPokemonList.push(pPokemon);
@@ -25,10 +46,29 @@ let repoPokemon = (function() {
     function getAll() {
         return aPokemonList;
     }
+    function validate(pPokemon) {
+        if (typeof pPokemon != "object") return false;
+        let keyTemplate = Object.keys(pPokemonTemplate);
+        let keyPokemon = Object.keys(pPokemon);
+        return JSON.stringify(keyTemplate) == JSON.stringify(keyPokemon);
+    }
+    function addv(pPokemon) {
+        if (validate(pPokemon)) {
+            add(pPokemon);
+        } else {
+            alert("This is not a valid pokemon.");
+        }
+    }
+    function filterByName(strName) {
+        return aPokemonList.filter(pPokemon => pPokemon.name == strName);
+    }
 
     return {
         add: add,
         getAll: getAll,
+        validate: validate,
+        addv: addv,
+        filterByName: filterByName
     };
 })();
 
@@ -160,13 +200,12 @@ let pCharizard = {
     }
 };
 
-repoPokemon.add(pBulbasaur);
-repoPokemon.add(pIvysaur);
-repoPokemon.add(pVenusaur);
-repoPokemon.add(pCharmander);
-repoPokemon.add(pCharmeleon);
-repoPokemon.add(pCharizard);
-
+repoPokemon.addv(pBulbasaur);
+repoPokemon.addv(pIvysaur);
+repoPokemon.addv(pVenusaur);
+repoPokemon.addv(pCharmander);
+repoPokemon.addv(pCharmeleon);
+repoPokemon.addv(pCharizard);
 
 document.write("<p class='list'>")
 document.write("Pokemons in list:");    // CR is ignored in html, meaningless for writeln
