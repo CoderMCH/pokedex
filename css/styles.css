@@ -3,7 +3,16 @@ body {
     color: white;
 }
 
-.list {
-    font-size: 48px;
+.pekomon-list-item, .pekomon-list {
+    font-size: 24px;
     color: yellowgreen;
+    margin-bottom: 10px;
+}
+
+.pekomon-list-button {
+    box-shadow: 3px 3px 5px aqua;
+}
+
+.pekomon-list-button:hover {
+    box-shadow: 3px 3px 5px yellow;
 }

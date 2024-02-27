@@ -62,13 +62,33 @@ let repoPokemon = (function() {
     function filterByName(strName) {
         return aPokemonList.filter(pPokemon => pPokemon.name == strName);
     }
+    function addListItem(pPokemon) {;
+        let button = document.createElement("button");
+        button.classList.add("pekomon-list-button");
+        button.innerText = pPokemon.name;
+        addButtonEvenListener(button, pPokemon);
+        
+        let ulPekomonList = document.querySelector("ul.pokemon-list");
+        let liPekomon = document.createElement("li");
+        liPekomon.classList.add("pekomon-list-item");
+        liPekomon.appendChild(button);
+        ulPekomonList.appendChild(liPekomon);
+    }
+    function showDetail(pPokemon) {
+        console.log(pPokemon);
+    }
+    function addButtonEvenListener(pButton, pPokemon) {
+        pButton.addEventListener("click", ev => showDetail(pPokemon));
+    }
 
     return {
         add: add,
         getAll: getAll,
         validate: validate,
         addv: addv,
-        filterByName: filterByName
+        filterByName: filterByName,
+        addListItem: addListItem,
+        showDetail: showDetail
     };
 })();
 
@@ -207,15 +227,6 @@ repoPokemon.addv(pCharmander);
 repoPokemon.addv(pCharmeleon);
 repoPokemon.addv(pCharizard);
 
-document.write("<p class='list'>")
-document.write("Pokemons in list:");    // CR is ignored in html, meaningless for writeln
-document.write("<br>");                 // use <br> for new line
 repoPokemon.getAll().forEach(pPokemon => {
-    document.write('#' + pPokemon.id + " " + pPokemon.name
-        + " (height: " + pPokemon.profile.height + "m)");
-    if (pPokemon.profile.height >= 1) {
-        document.write(" - Wow, that's big!");
-    }
-    document.write("<br>");
+    repoPokemon.addListItem(pPokemon);
 })
-document.write("</p>")
