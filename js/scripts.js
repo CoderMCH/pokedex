@@ -62,13 +62,26 @@ let repoPokemon = (function() {
     function filterByName(strName) {
         return aPokemonList.filter(pPokemon => pPokemon.name == strName);
     }
+    function addListItem(pPokemon) {;
+        let mesg = '#' + pPokemon.id + " " + pPokemon.name
+            + " (height: " + pPokemon.profile.height + "m)";
+        if (pPokemon.profile.height >= 1) {
+            mesg += " - Wow, that's big!";
+        }
+        let liPekomon = document.createElement("li");
+        liPekomon.classList.add("pekomon-list-item");
+        liPekomon.innerText = mesg;
+        let olPekomonQuery = document.querySelector(".pekomon-list");
+        olPekomonQuery.appendChild(liPekomon)
+    }
 
     return {
         add: add,
         getAll: getAll,
         validate: validate,
         addv: addv,
-        filterByName: filterByName
+        filterByName: filterByName,
+        addListItem: addListItem
     };
 })();
 
@@ -207,15 +220,17 @@ repoPokemon.addv(pCharmander);
 repoPokemon.addv(pCharmeleon);
 repoPokemon.addv(pCharizard);
 
-document.write("<p class='list'>")
-document.write("Pokemons in list:");    // CR is ignored in html, meaningless for writeln
-document.write("<br>");                 // use <br> for new line
+// create pokemon list
+let divContent = document.querySelector("div.content");
+let pTitle = document.createElement("p");
+pTitle.classList.add("pekomon-list-title");
+pTitle.innerText ="Pekomons in list:";
+divContent.appendChild(pTitle);
+
+let olPekomon = document.createElement("ol");
+olPekomon.classList.add("pekomon-list")
+divContent.appendChild(olPekomon);
+
 repoPokemon.getAll().forEach(pPokemon => {
-    document.write('#' + pPokemon.id + " " + pPokemon.name
-        + " (height: " + pPokemon.profile.height + "m)");
-    if (pPokemon.profile.height >= 1) {
-        document.write(" - Wow, that's big!");
-    }
-    document.write("<br>");
+    repoPokemon.addListItem(pPokemon);
 })
-document.write("</p>")

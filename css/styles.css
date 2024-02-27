@@ -3,7 +3,7 @@ body {
     color: white;
 }
 
-.list {
-    font-size: 48px;
+.pekomon-list-title, .pekomon-list {
+    font-size: 24px;
     color: yellowgreen;
 }
