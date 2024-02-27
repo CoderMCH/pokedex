@@ -63,16 +63,22 @@ let repoPokemon = (function() {
         return aPokemonList.filter(pPokemon => pPokemon.name == strName);
     }
     function addListItem(pPokemon) {;
-        let mesg = '#' + pPokemon.id + " " + pPokemon.name
-            + " (height: " + pPokemon.profile.height + "m)";
-        if (pPokemon.profile.height >= 1) {
-            mesg += " - Wow, that's big!";
-        }
+        let button = document.createElement("button");
+        button.classList.add("pekomon-list-button");
+        button.innerText = pPokemon.name;
+        addButtonEvenListener(button, pPokemon);
+        
+        let ulPekomonList = document.querySelector("ul.pokemon-list");
         let liPekomon = document.createElement("li");
         liPekomon.classList.add("pekomon-list-item");
-        liPekomon.innerText = mesg;
-        let olPekomonQuery = document.querySelector(".pekomon-list");
-        olPekomonQuery.appendChild(liPekomon)
+        liPekomon.appendChild(button);
+        ulPekomonList.appendChild(liPekomon);
+    }
+    function showDetail(pPokemon) {
+        console.log(pPokemon);
+    }
+    function addButtonEvenListener(pButton, pPokemon) {
+        pButton.addEventListener("click", ev => showDetail(pPokemon));
     }
 
     return {
@@ -81,7 +87,8 @@ let repoPokemon = (function() {
         validate: validate,
         addv: addv,
         filterByName: filterByName,
-        addListItem: addListItem
+        addListItem: addListItem,
+        showDetail: showDetail
     };
 })();
 
@@ -219,17 +226,6 @@ repoPokemon.addv(pVenusaur);
 repoPokemon.addv(pCharmander);
 repoPokemon.addv(pCharmeleon);
 repoPokemon.addv(pCharizard);
-
-// create pokemon list
-let divContent = document.querySelector("div.content");
-let pTitle = document.createElement("p");
-pTitle.classList.add("pekomon-list-title");
-pTitle.innerText ="Pekomons in list:";
-divContent.appendChild(pTitle);
-
-let olPekomon = document.createElement("ol");
-olPekomon.classList.add("pekomon-list")
-divContent.appendChild(olPekomon);
 
 repoPokemon.getAll().forEach(pPokemon => {
     repoPokemon.addListItem(pPokemon);
