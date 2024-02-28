@@ -38,34 +38,78 @@ let repoPokemon = (function() {
     }
     function showDetails(pPokemon) {
         let p = document.querySelector(".pokemon-details");
-        p.innerText = pPokemon.name;
+        p.innerText = "";
+        loadDetails(pPokemon).then(res => {
+            console.log(res);   // as task 6.2 request
+            p.innerText = "#" + res.id + "\xa0" + res.name + "\n";
+            p.innerText += "types:\xa0";
+            console.log(res)
+            res.types.forEach(slot => p.innerText += slot.type.name + "\xa0")
+        })
     }
     function addButtonEvenListener(pButton, pPokemon) {
         pButton.addEventListener("click", ev => showDetails(pPokemon));
     }
 
-    function loadList() {
-        fetch(apiUrl, {method: "GET"}).then(res => {
-            return res.json();
-        }).then(json => {
-            json.results.forEach(pokemon => {
-                add({
-                    name: pokemon.name,
-                    detailsUrl: pokemon.url
-                })
+    async function loadList() {
+        try {
+            showLoadingMessage();
+            await new Promise((resolve, reject) => {
+                setTimeout(() => {
+                return fetch(apiUrl, {method: "GET"})
+                    .then(res => {return res.json()})
+                    .then(json => {
+                        json.results.forEach(pokemon => {
+                            add({
+                                name: pokemon.name,
+                                detailsUrl: pokemon.url
+                            });
+                        });
+                        hideLoadingMessage();
+                        resolve();
+                    }
+                    ).catch(err => {
+                        console.error(err);
+                        reject(err);
+                    })
+                }, 2000)
             })
-        }).catch(err => console.error(err))
+        } catch (err) {
+            return console.error(err);
+        }
     }
-    function loadDetails(pPokemon) {
-        fetch(pPokemon.detailsUrl, {method: "GET"}).then(res => {
-            return res.json();
-        }).then(json => {
-            console.log(json)
-            pPokemon.id = json.id;
-            pPokemon.types = json.types;
-            pPokemon.sprite = json.sprite;
-            pPokemon.height = json.height;
-        }).catch(err => console.error(err))
+    async function loadDetails(pPokemon) {
+        try {
+            showLoadingMessage();
+            await new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    fetch(pPokemon.detailsUrl, { method: "GET" }).then(res => {
+                        return res.json();
+                    }).then(json => {
+                        pPokemon.id = json.id;
+                        pPokemon.types = json.types;
+                        pPokemon.sprite = json.sprite;
+                        pPokemon.height = json.height;
+                        hideLoadingMessage();
+                        resolve();
+                    }).catch(err => {
+                        console.error(err);
+                        reject();
+                    })
+                }, 2000)
+            })
+            return pPokemon;
+        } catch (err) {
+            return console.error(err);
+        }
+    }
+    function showLoadingMessage() {
+        let mesg = document.getElementById("loading-message");
+        mesg.style = "display: block";
+    }
+    function hideLoadingMessage() {
+        let mesg = document.getElementById("loading-message");
+        mesg.style = "display: none";
     }
 
     return {
@@ -77,12 +121,15 @@ let repoPokemon = (function() {
         addListItem: addListItem,
         showDetail: showDetails,
         loadList: loadList,
-        loadDetails: loadDetails
+        loadDetails: loadDetails,
+        showLoadingMessage: showLoadingMessage,
+        hideLoadingMessage: hideLoadingMessage
     };
 })();
 
-repoPokemon.loadList();
+repoPokemon.loadList().then(() => {
+    repoPokemon.getAll().forEach(pPokemon => {
+        repoPokemon.addListItem(pPokemon);
+    })
+}).catch(err => console.error(err))
 
-repoPokemon.getAll().forEach(pPokemon => {
-    repoPokemon.addListItem(pPokemon);
-})
