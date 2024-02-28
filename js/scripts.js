@@ -37,18 +37,24 @@ let repoPokemon = (function() {
         ulPekomonList.appendChild(liPekomon);
     }
     function showDetails(pPokemon) {
-        let p = document.querySelector(".pokemon-details");
-        p.innerText = "";
+        showLoadingMessage();
         loadDetails(pPokemon).then(res => {
-            console.log(res);   // as task 6.2 request
-            p.innerText = "#" + res.id + "\xa0" + res.name + "\n";
-            p.innerText += "types:\xa0";
-            console.log(res)
-            res.types.forEach(slot => p.innerText += slot.type.name + "\xa0")
-        })
+            let details = "#" + res.id + "\xa0" + res.name + "\n";
+            details += "types:\xa0";
+            res.types.forEach(slot => details += slot.type.name + "\xa0")
+            details += "\nheight: " + res.height + "m\n";
+            details += "weight: " + res.weight + "kg\n";
+            let imgList = [
+                res.sprites.front_default, res.sprites.front_shiny,
+                res.sprites.back_default, res.sprites.back_shiny,
+                res.sprites.back_female, res.sprites.back_shiny_female,
+                res.sprites.front_female, res.sprites.front_shiny_female
+            ]
+            showModal("Pokemon details", details, imgList);
+        }).catch(err => console.error(err));
     }
     function addButtonEvenListener(pButton, pPokemon) {
-        pButton.addEventListener("click", ev => showDetails(pPokemon));
+        pButton.addEventListener("pointerdown", ev => showDetails(pPokemon));
     }
 
     async function loadList() {
@@ -88,8 +94,9 @@ let repoPokemon = (function() {
                     }).then(json => {
                         pPokemon.id = json.id;
                         pPokemon.types = json.types;
-                        pPokemon.sprite = json.sprite;
+                        pPokemon.sprites = json.sprites;
                         pPokemon.height = json.height;
+                        pPokemon.weight = json.weight;
                         hideLoadingMessage();
                         resolve();
                     }).catch(err => {
@@ -104,12 +111,48 @@ let repoPokemon = (function() {
         }
     }
     function showLoadingMessage() {
-        let mesg = document.getElementById("loading-message");
-        mesg.style = "display: block";
+        showModal("", "Loading......");
     }
     function hideLoadingMessage() {
-        let mesg = document.getElementById("loading-message");
-        mesg.style = "display: none";
+        hideModal();
+    }
+
+    function showModal(title, text, imgList) {
+        let modalContainer = document.querySelector(".modal-container");
+        modalContainer.classList.remove("invisible");
+        document.getElementById("modal-title").innerText = title;
+        document.getElementById("modal-details").innerText = text;
+        let gallery = modalContainer.querySelector("#modal-gallery");
+        Array.from(gallery.children).forEach(child => gallery.removeChild(child))
+        if (imgList) {
+            imgList.forEach(imgUrl => {
+                if (!imgUrl) return;
+                let img = document.createElement("img");
+                img.src = imgUrl;
+                gallery.appendChild(img);
+            })
+        }
+    }
+    function hideModal() {
+        let modalContainer = document.querySelector(".modal-container");
+        modalContainer.classList.add("invisible");
+    }
+    function modalListeners() {
+        let buttonClose = document.getElementById("modal-button-close");
+        buttonClose.addEventListener("pointerdown", ev => {
+            hideModal();
+        })
+        let modalContainer = document.querySelector(".modal-container");
+        window.addEventListener("keydown", ev => {
+            if (ev.key == "Escape" && !modal.classList.contains("invisible")) {
+                hideModal();
+            }
+        })
+        modalContainer.addEventListener("pointerdown", ev => {
+            if (ev.target === modalContainer) {
+                hideModal();
+            }
+        })
     }
 
     return {
@@ -123,13 +166,16 @@ let repoPokemon = (function() {
         loadList: loadList,
         loadDetails: loadDetails,
         showLoadingMessage: showLoadingMessage,
-        hideLoadingMessage: hideLoadingMessage
+        hideLoadingMessage: hideLoadingMessage,
+        showModal: showModal,
+        hideModal: hideModal,
+        modalListeners: modalListeners
     };
 })();
 
+repoPokemon.modalListeners();
 repoPokemon.loadList().then(() => {
     repoPokemon.getAll().forEach(pPokemon => {
         repoPokemon.addListItem(pPokemon);
     })
 }).catch(err => console.error(err))
-
