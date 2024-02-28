@@ -42,8 +42,8 @@ let repoPokemon = (function() {
             let details = "#" + res.id + "\xa0" + res.name + "\n";
             details += "types:\xa0";
             res.types.forEach(slot => details += slot.type.name + "\xa0")
-            details += "\nheight: " + res.height + "m\n";
-            details += "weight: " + res.weight + "kg\n";
+            details += "\nheight: " + res.height/10 + "m\n";
+            details += "weight: " + res.weight/10 + "kg\n";
             let imgList = [
                 res.sprites.front_default, res.sprites.front_shiny,
                 res.sprites.back_default, res.sprites.back_shiny,
