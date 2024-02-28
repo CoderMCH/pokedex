@@ -1,18 +1,29 @@
 body {
     background-color: rgb(29, 29, 29);
     color: white;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    width: 100%;
 }
 
-.pekomon-list-item, .pekomon-list {
+.pokemon-list-item, .pekomon-list {
     font-size: 24px;
     color: yellowgreen;
     margin-bottom: 10px;
 }
 
-.pekomon-list-button {
+.pokemon-list-button {
     box-shadow: 3px 3px 5px aqua;
 }
 
-.pekomon-list-button:hover {
+.pokemon-list-button:hover {
     box-shadow: 3px 3px 5px yellow;
+}
+
+.pokemon-details-block {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 2;
+    margin-left: 20px;
 }
