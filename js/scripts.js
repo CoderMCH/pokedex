@@ -37,22 +37,24 @@ let repoPokemon = (function() {
         ulPekomonList.appendChild(liPekomon);
     }
     function showDetails(pPokemon) {
-        let title = document.getElementById("pokemon-details-title");
-        let details = document.getElementById("pokemon-details");
-        title.classList.add("invisible");
-        details.classList.add("invisible");
+        showLoadingMessage();
         loadDetails(pPokemon).then(res => {
-            title.classList.remove("invisible");
-            details.classList.remove("invisible");
-            showModal();
-
-            details.innerText = "#" + res.id + "\xa0" + res.name + "\n";
-            details.innerText += "types:\xa0";
-            res.types.forEach(slot => details.innerText += slot.type.name + "\xa0")
+            let details = "#" + res.id + "\xa0" + res.name + "\n";
+            details += "types:\xa0";
+            res.types.forEach(slot => details += slot.type.name + "\xa0")
+            details += "\nheight: " + res.height + "m\n";
+            details += "weight: " + res.weight + "kg\n";
+            let imgList = [
+                res.sprites.front_default, res.sprites.front_shiny,
+                res.sprites.back_default, res.sprites.back_shiny,
+                res.sprites.back_female, res.sprites.back_shiny_female,
+                res.sprites.front_female, res.sprites.front_shiny_female
+            ]
+            showModal("Pokemon details", details, imgList);
         }).catch(err => console.error(err));
     }
     function addButtonEvenListener(pButton, pPokemon) {
-        pButton.addEventListener("click", ev => showDetails(pPokemon));
+        pButton.addEventListener("pointerdown", ev => showDetails(pPokemon));
     }
 
     async function loadList() {
@@ -92,8 +94,9 @@ let repoPokemon = (function() {
                     }).then(json => {
                         pPokemon.id = json.id;
                         pPokemon.types = json.types;
-                        pPokemon.sprite = json.sprite;
+                        pPokemon.sprites = json.sprites;
                         pPokemon.height = json.height;
+                        pPokemon.weight = json.weight;
                         hideLoadingMessage();
                         resolve();
                     }).catch(err => {
@@ -108,23 +111,48 @@ let repoPokemon = (function() {
         }
     }
     function showLoadingMessage() {
-        showModal();
-        let mesg = document.getElementById("loading-message");
-        mesg.classList.remove("invisible");
+        showModal("", "Loading......");
     }
     function hideLoadingMessage() {
         hideModal();
-        let mesg = document.getElementById("loading-message");
-        mesg.classList.add("invisible");
     }
 
-    function showModal() {
-        let modal = document.querySelector(".modal-container");
-        modal.classList.remove("invisible");
+    function showModal(title, text, imgList) {
+        let modalContainer = document.querySelector(".modal-container");
+        modalContainer.classList.remove("invisible");
+        document.getElementById("modal-title").innerText = title;
+        document.getElementById("modal-details").innerText = text;
+        let gallery = modalContainer.querySelector("#modal-gallery");
+        Array.from(gallery.children).forEach(child => gallery.removeChild(child))
+        if (imgList) {
+            imgList.forEach(imgUrl => {
+                if (!imgUrl) return;
+                let img = document.createElement("img");
+                img.src = imgUrl;
+                gallery.appendChild(img);
+            })
+        }
     }
     function hideModal() {
-        let modal = document.querySelector(".modal-container");
-        modal.classList.add("invisible");
+        let modalContainer = document.querySelector(".modal-container");
+        modalContainer.classList.add("invisible");
+    }
+    function modalListeners() {
+        let buttonClose = document.getElementById("modal-button-close");
+        buttonClose.addEventListener("pointerdown", ev => {
+            hideModal();
+        })
+        let modalContainer = document.querySelector(".modal-container");
+        window.addEventListener("keydown", ev => {
+            if (ev.key == "Escape" && !modal.classList.contains("invisible")) {
+                hideModal();
+            }
+        })
+        modalContainer.addEventListener("pointerdown", ev => {
+            if (ev.target === modalContainer) {
+                hideModal();
+            }
+        })
     }
 
     return {
@@ -140,10 +168,12 @@ let repoPokemon = (function() {
         showLoadingMessage: showLoadingMessage,
         hideLoadingMessage: hideLoadingMessage,
         showModal: showModal,
-        hideModal: hideModal
+        hideModal: hideModal,
+        modalListeners: modalListeners
     };
 })();
 
+repoPokemon.modalListeners();
 repoPokemon.loadList().then(() => {
     repoPokemon.getAll().forEach(pPokemon => {
         repoPokemon.addListItem(pPokemon);
