@@ -144,7 +144,8 @@ let repoPokemon = (function() {
         })
         let modalContainer = document.querySelector(".modal-container");
         window.addEventListener("keydown", ev => {
-            if (ev.key == "Escape" && !modal.classList.contains("invisible")) {
+            console.log(ev.key)
+            if (ev.key == "Escape" && !modalContainer.classList.contains("invisible")) {
                 hideModal();
             }
         })
