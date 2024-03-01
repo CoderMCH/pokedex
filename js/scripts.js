@@ -54,7 +54,7 @@ let repoPokemon = (function() {
         }).catch(err => console.error(err));
     }
     function addButtonEvenListener(pButton, pPokemon) {
-        pButton.on("click", ev => showDetails(pPokemon));
+        pButton.on("pointerdown", ev => showDetails(pPokemon));
     }
 
     async function loadList() {
@@ -178,3 +178,20 @@ repoPokemon.loadList().then(() => {
         repoPokemon.addListItem(pPokemon);
     })
 }).catch(err => console.error(err))
+
+function searchPokemon(text) {
+    $("li").show();
+    if (text == "") {
+        return;
+    }
+    $("#pokemon-list button:not(:contains(" + text + "))").parent().hide();
+}
+$("#pokemon-search").keypress(ev => {
+    let text = $("#pokemon-search").val() + ev.key; // val doesn't include event input
+    searchPokemon(text);
+})
+$("#pokemon-search").keyup(ev => {
+    if (ev.keyCode != 8) return;    // backspace = keyCode 8
+    let text = $("#pokemon-search").val();
+    searchPokemon(text);
+})
