@@ -54,7 +54,7 @@ let repoPokemon = (function() {
         }).catch(err => console.error(err));
     }
     function addButtonEvenListener(pButton, pPokemon) {
-        pButton.on("click", ev => console.log(pPokemon));
+        pButton.on("click", ev => showDetails(pPokemon));
     }
 
     async function loadList() {
@@ -97,7 +97,6 @@ let repoPokemon = (function() {
                         pPokemon.sprites = json.sprites;
                         pPokemon.height = json.height;
                         pPokemon.weight = json.weight;
-                        hideLoadingMessage();
                         resolve();
                     }).catch(err => {
                         console.error(err);
@@ -118,42 +117,44 @@ let repoPokemon = (function() {
     }
 
     function showModal(title, text, imgList) {
-        let modalContainer = document.querySelector(".modal-container");
-        modalContainer.classList.remove("invisible");
-        document.getElementById("modal-title").innerText = title;
-        document.getElementById("modal-details").innerText = text;
-        let gallery = modalContainer.querySelector("#modal-gallery");
-        Array.from(gallery.children).forEach(child => gallery.removeChild(child))
+        $("#modalLong").modal("show");
+        $("#modalLongTitle").text(title);
+        let modalBody = $("#modalLong .modal-body").empty();
+        let paragraph = $("<p></p>");
+        text.split("\n").forEach(substr => paragraph.append(substr).append("<br>"));
+        modalBody.append(paragraph);
+        let gallery = $("<div></div>").addClass("row");
         if (imgList) {
             imgList.forEach(imgUrl => {
                 if (!imgUrl) return;
-                let img = document.createElement("img");
-                img.src = imgUrl;
-                gallery.appendChild(img);
+                let img = $("<img>").attr("src", imgUrl).addClass("col col-sm-6");
+                gallery.append(img);
             })
         }
+        modalBody.append(gallery);
     }
     function hideModal() {
-        let modalContainer = document.querySelector(".modal-container");
-        modalContainer.classList.add("invisible");
+        $("#modalLong").modal("hide");
     }
-    function modalListeners() {
-        let buttonClose = document.getElementById("modal-button-close");
-        buttonClose.addEventListener("pointerdown", ev => {
-            hideModal();
-        })
-        let modalContainer = document.querySelector(".modal-container");
-        window.addEventListener("keydown", ev => {
-            if (ev.key == "Escape" && !modalContainer.classList.contains("invisible")) {
-                hideModal();
-            }
-        })
-        modalContainer.addEventListener("pointerdown", ev => {
-            if (ev.target === modalContainer) {
-                hideModal();
-            }
-        })
-    }
+
+    // legacy code for modal without framework
+    // function modalListeners() {
+        // let buttonClose = document.getElementById("modal-button-close");
+        // buttonClose.addEventListener("pointerdown", ev => {
+        //     hideModal();
+        // })
+        // let modalContainer = document.querySelector(".modal-container");
+        // window.addEventListener("keydown", ev => {
+        //     if (ev.key == "Escape" && !modalContainer.classList.contains("invisible")) {
+        //         hideModal();
+        //     }
+        // })
+        // modalContainer.addEventListener("pointerdown", ev => {
+        //     if (ev.target === modalContainer) {
+        //         hideModal();
+        //     }
+        // })
+    // }
 
     return {
         add: add,
@@ -169,11 +170,9 @@ let repoPokemon = (function() {
         hideLoadingMessage: hideLoadingMessage,
         showModal: showModal,
         hideModal: hideModal,
-        modalListeners: modalListeners
     };
 })();
 
-repoPokemon.modalListeners();
 repoPokemon.loadList().then(() => {
     repoPokemon.getAll().forEach(pPokemon => {
         repoPokemon.addListItem(pPokemon);

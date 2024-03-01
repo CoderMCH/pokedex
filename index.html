@@ -14,15 +14,25 @@
     <main class="container">
         <ul class="list-group" id="pokemon-list"></ul>
     </main>
-
-
-    <div class="modal-container invisible">
-        <div class="modal">
-            <button id="modal-button-close" class="modal-button">Close</button>
-            <h1 id="modal-title"></h1>
-            <p id="modal-details"></p>
-            <div id="modal-gallery"></div>
+  
+    <!-- Modal -->
+    <div class="modal fade" id="modalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modalLongTitle">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
         </div>
+        <div class="modal-body">
+            ...
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
     </div>
     
     <script src="js/promise-polyfill.js"></script>
