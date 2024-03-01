@@ -26,8 +26,8 @@ let repoPokemon = (function() {
         return aPokemonList.filter(pPokemon => pPokemon.name == strName);
     }
     function addListItem(pPokemon) {
-        let btn = $("<button></button>");
-        btn.addClass("btn btn-primary");
+        let btn = $("<button></button>").addClass("btn btn-primary");
+        btn.attr("data-toggle", "modal").attr("data-target", "#modalLong");
         btn.append(pPokemon.name);
         addButtonEvenListener(btn, pPokemon);
         let li = $("<li></li>");
