@@ -5,26 +5,53 @@
     <meta name="author" content="MCH">
     <meta charset="UTF-8">
     <title>Pokedex</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
 <body>
-    <div>
-        <h1>Pokemons</h1>
-        <ul class="pokemon-list"></ul>
-    </div>
+    <header>
+        <nav class="navbar .navbar-nav navbar-light bg-light">
+            <h1 class="navbar-brand">Pokedex</h1>
+            <div class="nav-item" id="navbarSupportedContent">
+              <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" id="pokemon-search" type="search" placeholder="Search by name" aria-label="Search">
+              </form>
+            </div>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalLong">
+                Launch modal
+            </button>
+          </nav>
+    </header>
 
-
-    <div class="modal-container invisible">
-        <div class="modal">
-            <button id="modal-button-close" class="modal-button">Close</button>
-            <h1 id="modal-title"></h1>
-            <p id="modal-details"></p>
-            <div id="modal-gallery"></div>
+    <main class="container">
+        <ul class="list-group" id="pokemon-list"></ul>
+    </main>
+  
+    <!-- Modal -->
+    <div class="modal fade" id="modalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modalLongTitle">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
         </div>
+        <div class="modal-body">
+            ...
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
     </div>
     
     <script src="js/promise-polyfill.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="js/scripts.js"></script>
 </body>
 

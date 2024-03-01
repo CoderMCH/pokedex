@@ -1,6 +1,7 @@
 let repoPokemon = (function() {
     let aPokemonList = [];
     let apiUrl = "https://pokeapi.co/api/v2/pokemon/";
+    let nDelay = 500;
 
     function add(pPokemon) {
         aPokemonList.push(pPokemon);
@@ -24,17 +25,16 @@ let repoPokemon = (function() {
     function filterByName(strName) {
         return aPokemonList.filter(pPokemon => pPokemon.name == strName);
     }
-    function addListItem(pPokemon) {;
-        let button = document.createElement("button");
-        button.classList.add("pokemon-list-button");
-        button.innerText = pPokemon.name;
-        addButtonEvenListener(button, pPokemon);
-        
-        let ulPekomonList = document.querySelector("ul.pokemon-list");
-        let liPekomon = document.createElement("li");
-        liPekomon.classList.add("pokemon-list-item");
-        liPekomon.appendChild(button);
-        ulPekomonList.appendChild(liPekomon);
+    function addListItem(pPokemon) {
+        let btn = $("<button></button>").addClass("btn btn-primary");
+        btn.attr("data-toggle", "modal").attr("data-target", "#modalLong");
+        btn.append(pPokemon.name);
+        addButtonEvenListener(btn, pPokemon);
+        let li = $("<li></li>");
+        li.addClass("list-group-item list-group-item-dark")
+        li.append(btn);
+        let ul = $("#pokemon-list");
+        ul.append(li);
     }
     function showDetails(pPokemon) {
         showLoadingMessage();
@@ -54,7 +54,7 @@ let repoPokemon = (function() {
         }).catch(err => console.error(err));
     }
     function addButtonEvenListener(pButton, pPokemon) {
-        pButton.addEventListener("pointerdown", ev => showDetails(pPokemon));
+        pButton.on("pointerdown", ev => showDetails(pPokemon));
     }
 
     async function loadList() {
@@ -78,7 +78,7 @@ let repoPokemon = (function() {
                         console.error(err);
                         reject(err);
                     })
-                }, 2000)
+                }, nDelay)
             })
         } catch (err) {
             return console.error(err);
@@ -97,13 +97,12 @@ let repoPokemon = (function() {
                         pPokemon.sprites = json.sprites;
                         pPokemon.height = json.height;
                         pPokemon.weight = json.weight;
-                        hideLoadingMessage();
                         resolve();
                     }).catch(err => {
                         console.error(err);
                         reject();
                     })
-                }, 2000)
+                }, nDelay)
             })
             return pPokemon;
         } catch (err) {
@@ -118,43 +117,44 @@ let repoPokemon = (function() {
     }
 
     function showModal(title, text, imgList) {
-        let modalContainer = document.querySelector(".modal-container");
-        modalContainer.classList.remove("invisible");
-        document.getElementById("modal-title").innerText = title;
-        document.getElementById("modal-details").innerText = text;
-        let gallery = modalContainer.querySelector("#modal-gallery");
-        Array.from(gallery.children).forEach(child => gallery.removeChild(child))
+        $("#modalLong").modal("show");
+        $("#modalLongTitle").text(title);
+        let modalBody = $("#modalLong .modal-body").empty();
+        let paragraph = $("<p></p>");
+        text.split("\n").forEach(substr => paragraph.append(substr).append("<br>"));
+        modalBody.append(paragraph);
+        let gallery = $("<div></div>").addClass("row");
         if (imgList) {
             imgList.forEach(imgUrl => {
                 if (!imgUrl) return;
-                let img = document.createElement("img");
-                img.src = imgUrl;
-                gallery.appendChild(img);
+                let img = $("<img>").attr("src", imgUrl).addClass("col col-sm-6");
+                gallery.append(img);
             })
         }
+        modalBody.append(gallery);
     }
     function hideModal() {
-        let modalContainer = document.querySelector(".modal-container");
-        modalContainer.classList.add("invisible");
+        $("#modalLong").modal("hide");
     }
-    function modalListeners() {
-        let buttonClose = document.getElementById("modal-button-close");
-        buttonClose.addEventListener("pointerdown", ev => {
-            hideModal();
-        })
-        let modalContainer = document.querySelector(".modal-container");
-        window.addEventListener("keydown", ev => {
-            console.log(ev.key)
-            if (ev.key == "Escape" && !modalContainer.classList.contains("invisible")) {
-                hideModal();
-            }
-        })
-        modalContainer.addEventListener("pointerdown", ev => {
-            if (ev.target === modalContainer) {
-                hideModal();
-            }
-        })
-    }
+
+    // legacy code for modal without framework
+    // function modalListeners() {
+        // let buttonClose = document.getElementById("modal-button-close");
+        // buttonClose.addEventListener("pointerdown", ev => {
+        //     hideModal();
+        // })
+        // let modalContainer = document.querySelector(".modal-container");
+        // window.addEventListener("keydown", ev => {
+        //     if (ev.key == "Escape" && !modalContainer.classList.contains("invisible")) {
+        //         hideModal();
+        //     }
+        // })
+        // modalContainer.addEventListener("pointerdown", ev => {
+        //     if (ev.target === modalContainer) {
+        //         hideModal();
+        //     }
+        // })
+    // }
 
     return {
         add: add,
@@ -170,13 +170,28 @@ let repoPokemon = (function() {
         hideLoadingMessage: hideLoadingMessage,
         showModal: showModal,
         hideModal: hideModal,
-        modalListeners: modalListeners
     };
 })();
 
-repoPokemon.modalListeners();
 repoPokemon.loadList().then(() => {
     repoPokemon.getAll().forEach(pPokemon => {
         repoPokemon.addListItem(pPokemon);
     })
 }).catch(err => console.error(err))
+
+function searchPokemon(text) {
+    $("li").show();
+    if (text == "") {
+        return;
+    }
+    $("#pokemon-list button:not(:contains(" + text + "))").parent().hide();
+}
+$("#pokemon-search").keypress(ev => {
+    let text = $("#pokemon-search").val() + ev.key; // val doesn't include event input
+    searchPokemon(text);
+})
+$("#pokemon-search").keyup(ev => {
+    if (ev.keyCode != 8) return;    // backspace = keyCode 8
+    let text = $("#pokemon-search").val();
+    searchPokemon(text);
+})
