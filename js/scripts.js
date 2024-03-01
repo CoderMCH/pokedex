@@ -1,6 +1,7 @@
 let repoPokemon = (function() {
     let aPokemonList = [];
     let apiUrl = "https://pokeapi.co/api/v2/pokemon/";
+    let nDelay = 500;
 
     function add(pPokemon) {
         aPokemonList.push(pPokemon);
@@ -24,17 +25,16 @@ let repoPokemon = (function() {
     function filterByName(strName) {
         return aPokemonList.filter(pPokemon => pPokemon.name == strName);
     }
-    function addListItem(pPokemon) {;
-        let button = document.createElement("button");
-        button.classList.add("pokemon-list-button");
-        button.innerText = pPokemon.name;
-        addButtonEvenListener(button, pPokemon);
-        
-        let ulPekomonList = document.querySelector("ul.pokemon-list");
-        let liPekomon = document.createElement("li");
-        liPekomon.classList.add("pokemon-list-item");
-        liPekomon.appendChild(button);
-        ulPekomonList.appendChild(liPekomon);
+    function addListItem(pPokemon) {
+        let btn = $("<button></button>");
+        btn.addClass("btn btn-primary");
+        btn.append(pPokemon.name);
+        addButtonEvenListener(btn, pPokemon);
+        let li = $("<li></li>");
+        li.addClass("list-group-item list-group-item-dark")
+        li.append(btn);
+        let ul = $("#pokemon-list");
+        ul.append(li);
     }
     function showDetails(pPokemon) {
         showLoadingMessage();
@@ -54,7 +54,7 @@ let repoPokemon = (function() {
         }).catch(err => console.error(err));
     }
     function addButtonEvenListener(pButton, pPokemon) {
-        pButton.addEventListener("pointerdown", ev => showDetails(pPokemon));
+        pButton.on("click", ev => console.log(pPokemon));
     }
 
     async function loadList() {
@@ -78,7 +78,7 @@ let repoPokemon = (function() {
                         console.error(err);
                         reject(err);
                     })
-                }, 2000)
+                }, nDelay)
             })
         } catch (err) {
             return console.error(err);
@@ -103,7 +103,7 @@ let repoPokemon = (function() {
                         console.error(err);
                         reject();
                     })
-                }, 2000)
+                }, nDelay)
             })
             return pPokemon;
         } catch (err) {
@@ -144,7 +144,6 @@ let repoPokemon = (function() {
         })
         let modalContainer = document.querySelector(".modal-container");
         window.addEventListener("keydown", ev => {
-            console.log(ev.key)
             if (ev.key == "Escape" && !modalContainer.classList.contains("invisible")) {
                 hideModal();
             }
