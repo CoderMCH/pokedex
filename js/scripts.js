@@ -1,6 +1,6 @@
 let repoPokemon = (function() {
     let aPokemonList = [];
-    let apiUrl = "https://pokeapi.co/api/v2/pokemon/";
+    let apiUrl = "https://pokeapi.co/api/v2/pokemon/?limit=100000";
     let nDelay = 500;
 
     function add(pPokemon) {
@@ -11,9 +11,12 @@ let repoPokemon = (function() {
     }
     function validate(pPokemon) {
         if (typeof pPokemon != "object") return false;
-        let keyTemplate = Object.keys(pPokemonTemplate);
+        let keyTemplate = Object.keys({
+            name: "pokemon.name",
+            detailsUrl: "pokemon.url"
+        });
         let keyPokemon = Object.keys(pPokemon);
-        return JSON.stringify(keyTemplate) == JSON.stringify(keyPokemon);
+        return JSON.stringify(keyPokemon).includes(JSON.stringify(keyTemplate));
     }
     function addv(pPokemon) {
         if (validate(pPokemon)) {
@@ -54,7 +57,7 @@ let repoPokemon = (function() {
         }).catch(err => console.error(err));
     }
     function addButtonEvenListener(pButton, pPokemon) {
-        pButton.on("pointerdown", ev => showDetails(pPokemon));
+        pButton.on("pointerdown", () => showDetails(pPokemon));
     }
 
     async function loadList() {
@@ -66,7 +69,7 @@ let repoPokemon = (function() {
                     .then(res => {return res.json()})
                     .then(json => {
                         json.results.forEach(pokemon => {
-                            add({
+                            addv({
                                 name: pokemon.name,
                                 detailsUrl: pokemon.url
                             });
