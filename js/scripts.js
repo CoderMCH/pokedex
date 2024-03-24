@@ -33,11 +33,11 @@ let repoPokemon = (function() {
         btn.attr("data-toggle", "modal").attr("data-target", "#modalLong");
         btn.append(pPokemon.name);
         addButtonEvenListener(btn, pPokemon);
-        let li = $("<li></li>");
-        li.addClass("list-group-item list-group-item-dark")
-        li.append(btn);
-        let ul = $("#pokemon-list");
-        ul.append(li);
+        let div = $("<div></div>");
+        div.addClass("list-group-item list-group-item-dark")
+        div.append(btn);
+        let grid = $("#pokemon-list");
+        grid.append(div);
     }
     function showDetails(pPokemon) {
         showLoadingMessage();
@@ -185,6 +185,7 @@ repoPokemon.loadList().then(() => {
 function searchPokemon(text) {
     $("li").show();
     if (text == "") {
+        $("#pokemon-list button").parent().show();
         return;
     }
     $("#pokemon-list button:not(:contains(" + text + "))").parent().hide();
