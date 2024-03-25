@@ -198,14 +198,8 @@ function toggleFilterSelector() {
 }
 toggleFilterSelector();
 
-const types = ["Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Posion", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy", "Stellar"]
-types.forEach(type => {
-    let input = $(`<input type="checkbox" id="${type}-input"></input>`);
-    let label = $(`<label for="${type}-input">${type}</label>`);
-    let div = $(`<div></div>`);
-    div.append(input).append(label);
-    $("#type-filter").append(div);
-})
+const types = ["normal", "fire", "water", "electric", "grass", "ice", "fighting", "posion", "ground", "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy", "stellar"]
+let typeFilter = types;
 
 function searchPokemon() {
     $("#pokemon-list button").parent().show();
@@ -215,7 +209,12 @@ function searchPokemon() {
     let heightThreshold = $("#filter-height").val();
     let weightThreshold = $("#filter-weight").val();
     repoPokemon.getAll().forEach(pokemon => {
-        if (pokemon.height < (heightThreshold*10) || pokemon.weight < (weightThreshold*10)) {
+        let typeInclude = false;
+        console.log(pokemon)
+        pokemon.types.forEach(slot => {
+            typeInclude = typeInclude || typeFilter.includes(slot.type.name);
+        })
+        if (!typeInclude || pokemon.height < (heightThreshold*10) || pokemon.weight < (weightThreshold*10)) {
             $(`#${pokemon.name}-div`).hide();
         }
     })
@@ -223,6 +222,21 @@ function searchPokemon() {
 
 $("#pokemon-search").on("input", ev => {
     searchPokemon();
+})
+types.forEach(type => {
+    let input = $(`<input type="checkbox" id="${type}-input" checked="true"></input>`);
+    input.on("input", ev => {
+        if (ev.target.checked) {
+            typeFilter.push(type);
+        } else {
+            typeFilter.splice(typeFilter.indexOf(type), 1);
+        }
+        searchPokemon();
+    })
+    let label = $(`<label for="${type}-input">${type}</label>`);
+    let div = $(`<div></div>`);
+    div.append(input).append(label);
+    $("#type-filter").append(div);
 })
 $("#filter-height").on("input", ev => {
     searchPokemon();
