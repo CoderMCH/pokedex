@@ -33,28 +33,19 @@ let repoPokemon = (function() {
         btn.attr("data-toggle", "modal").attr("data-target", "#modalLong");
         btn.append(pPokemon.name);
         addButtonEvenListener(btn, pPokemon);
-        let div = $("<div></div>");
+        let div = $(`<div id="${pPokemon.name}-div"></div>`);
         div.addClass("list-group-item list-group-item-dark")
         div.append(btn);
         let grid = $("#pokemon-list");
         grid.append(div);
     }
     function showDetails(pPokemon) {
+        if (pPokemon.modal) {
+            showModal("Pokemon details", pPokemon.modal.details, pPokemon.modal.imgList);
+            return;
+        }
         showLoadingMessage();
-        loadDetails(pPokemon).then(res => {
-            let details = "#" + res.id + "\xa0" + res.name + "\n";
-            details += "types:\xa0";
-            res.types.forEach(slot => details += slot.type.name + "\xa0")
-            details += "\nheight: " + res.height/10 + "m\n";
-            details += "weight: " + res.weight/10 + "kg\n";
-            let imgList = [
-                res.sprites.front_default, res.sprites.front_shiny,
-                res.sprites.back_default, res.sprites.back_shiny,
-                res.sprites.back_female, res.sprites.back_shiny_female,
-                res.sprites.front_female, res.sprites.front_shiny_female
-            ]
-            showModal("Pokemon details", details, imgList);
-        }).catch(err => console.error(err));
+        pPokemon.showModal = true;
     }
     function addButtonEvenListener(pButton, pPokemon) {
         pButton.on("pointerdown", () => showDetails(pPokemon));
@@ -89,7 +80,6 @@ let repoPokemon = (function() {
     }
     async function loadDetails(pPokemon) {
         try {
-            showLoadingMessage();
             await new Promise((resolve, reject) => {
                 setTimeout(() => {
                     fetch(pPokemon.detailsUrl, { method: "GET" }).then(res => {
@@ -100,6 +90,25 @@ let repoPokemon = (function() {
                         pPokemon.sprites = json.sprites;
                         pPokemon.height = json.height;
                         pPokemon.weight = json.weight;
+                        
+                        // for modal usage
+                        let details = "#" + pPokemon.id + "\xa0" + pPokemon.name + "\n";
+                        details += "types:\xa0";
+                        pPokemon.types.forEach(slot => details += slot.type.name + "\xa0")
+                        details += "\nheight: " + pPokemon.height/10 + "m\n";
+                        details += "weight: " + pPokemon.weight/10 + "kg\n";
+                        pPokemon.modal = {
+                            details: details,
+                            imgList: [
+                                pPokemon.sprites.front_default, pPokemon.sprites.front_shiny,
+                                pPokemon.sprites.back_default, pPokemon.sprites.back_shiny,
+                                pPokemon.sprites.back_female, pPokemon.sprites.back_shiny_female,
+                                pPokemon.sprites.front_female, pPokemon.sprites.front_shiny_female
+                            ]
+                        }
+                        if (pPokemon.showModal) {
+                            showModal("Pokemon details", pPokemon.modal.details, pPokemon.modal.imgList);
+                        }
                         resolve();
                     }).catch(err => {
                         console.error(err);
@@ -179,23 +188,45 @@ let repoPokemon = (function() {
 repoPokemon.loadList().then(() => {
     repoPokemon.getAll().forEach(pPokemon => {
         repoPokemon.addListItem(pPokemon);
+        repoPokemon.loadDetails(pPokemon);
     })
 }).catch(err => console.error(err))
 
-function searchPokemon(text) {
-    $("li").show();
-    if (text == "") {
-        $("#pokemon-list button").parent().show();
-        return;
-    }
-    $("#pokemon-list button:not(:contains(" + text + "))").parent().hide();
+// filter related
+function toggleFilterSelector() {
+    $(".filter-selectors").toggle()
 }
-$("#pokemon-search").keypress(ev => {
-    let text = $("#pokemon-search").val() + ev.key; // val doesn't include event input
-    searchPokemon(text);
+toggleFilterSelector();
+
+const types = ["Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Posion", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy", "Stellar"]
+types.forEach(type => {
+    let input = $(`<input type="checkbox" id="${type}-input"></input>`);
+    let label = $(`<label for="${type}-input">${type}</label>`);
+    let div = $(`<div></div>`);
+    div.append(input).append(label);
+    $("#type-filter").append(div);
 })
-$("#pokemon-search").keyup(ev => {
-    if (ev.keyCode != 8) return;    // backspace = keyCode 8
+
+function searchPokemon() {
+    $("#pokemon-list button").parent().show();
+    
     let text = $("#pokemon-search").val();
-    searchPokemon(text);
+    $("#pokemon-list button:not(:contains(" + text + "))").parent().hide();
+    let heightThreshold = $("#filter-height").val();
+    let weightThreshold = $("#filter-weight").val();
+    repoPokemon.getAll().forEach(pokemon => {
+        if (pokemon.height < (heightThreshold*10) || pokemon.weight < (weightThreshold*10)) {
+            $(`#${pokemon.name}-div`).hide();
+        }
+    })
+}
+
+$("#pokemon-search").on("input", ev => {
+    searchPokemon();
+})
+$("#filter-height").on("input", ev => {
+    searchPokemon();
+})
+$("#filter-weight").on("input", ev => {
+    searchPokemon();
 })

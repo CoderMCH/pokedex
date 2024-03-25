@@ -1,0 +1,8 @@
+.filter-img:hover {
+    cursor: pointer;
+    /* cursor: url(""), pointer;  customize pointer */
+}
+
+.filter-selectors {
+    display: flex;
+}
