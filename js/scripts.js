@@ -210,7 +210,6 @@ function searchPokemon() {
     let weightThreshold = $("#filter-weight").val();
     repoPokemon.getAll().forEach(pokemon => {
         let typeInclude = false;
-        console.log(pokemon)
         pokemon.types.forEach(slot => {
             typeInclude = typeInclude || typeFilter.includes(slot.type.name);
         })
@@ -235,6 +234,7 @@ types.forEach(type => {
     })
     let label = $(`<label for="${type}-input">${type}</label>`);
     let div = $(`<div></div>`);
+    div.addClass("col-2")
     div.append(input).append(label);
     $("#type-filter").append(div);
 })
